@@ -70,7 +70,6 @@ function isActress(dati: unknown): dati is Actress {
   return false
 }
 
-
 async function getActress(id: number): Promise<Actress | null> {
   try {
     const response = await fetch(`http://localhost:3333/actresses/${id}`)
@@ -94,4 +93,30 @@ async function getActress(id: number): Promise<Actress | null> {
 }
 
 getActress(2)
+  .then(dati => console.log(dati))
+
+async function getAllActresses(): Promise<Actress[]> {
+  try {
+    const response = await fetch(`http://localhost:3333/actresses/`)
+    if (!response.ok) {
+      throw new Error(`Errore HTTP ${response.status}: ${response.statusText}`)
+    }
+    const dati: unknown = await response.json()
+    if (!(dati instanceof Array)) {
+      throw new Error(`Non è un array`)
+    }
+    const newDati = dati.filter(isActress)
+    return newDati
+  } catch (errore) {
+    if (errore instanceof Error) {
+      console.error(errore.message);
+    } else {
+      console.error(errore)
+    }
+    return []
+  }
+
+}
+
+getAllActresses()
   .then(dati => console.log(dati))
